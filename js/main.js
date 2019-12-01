@@ -60,49 +60,40 @@ win
 let rows = 9;
 let columns = 9;
 let mineCount = 10;
+let cells = [];
 
 function createGameboard(length, value) {
 	return new Array(length).fill(value);
 }
-
 let gameboard = createGameboard(rows, null).map(() =>
 	createGameboard(columns, 0)
 );
 
-let cells = [];
-
 for (let i = 0; i < gameboard.length; i++) {
 	for (let j = 0; j < gameboard[i].length; j++) {
 		const cellEl = $('<div></div>').addClass('cell');
-    $('#board').append(cellEl.attr('id', `${i}${j}`));
-    cells.push([i,j])
+		$('#board').append(cellEl.attr('id', `${i}${j}`));
+		cells.push([i, j]);
 	}
 }
 
-console.log(cells.length)
-
-const generateRandom = function() {
-	return Math.floor(Math.random() * rows);
-};
-
 const generateMines = function() {
 	for (let i = 0; i < mineCount; i++) {
-		let rowIndex = generateRandom();
-    let columnIndex = generateRandom();
-    
-    cells.splice((cells.indexOf[rowIndex, columnIndex]), 1);
-
-		if (gameboard[rowIndex][columnIndex] !== 'mine') {
-			gameboard[rowIndex][columnIndex] = 'mine';
-			$(`#${rowIndex}${columnIndex}`).css('background-color', 'red');
-		} else {
-      gameboard[rowIndex][columnIndex] = 0;
-    }
-		console.log(rowIndex, columnIndex);
+		let randomMines = Math.floor(Math.random() * cells.length);
+		let mine = cells[randomMines];
+		gameboard[mine[0]][mine[1]] = 'mine';
+		$(`#${mine[0]}${mine[1]}`).css('background-color', 'red');
+		cells.splice(randomMines, 1);
 	}
 };
 
 generateMines();
-console.log(cells)
 
-console.log(gameboard);
+const generateAdjacent = function() {
+	for (let i = 0; i < gameboard.length; i++) {
+		for (let j = 0; j < gameboard[i].length; j++) {}
+	}
+};
+
+console.log('cells:', cells);
+console.log('gameboard:', gameboard);
