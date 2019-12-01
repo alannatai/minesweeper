@@ -1,0 +1,21 @@
+*, *::after, *::before {
+  box-sizing: border-box;
+}
+
+#board {
+  display: flex;
+  flex-wrap: wrap;
+  width: 270px;
+}
+
+.cell {
+  height: 30px;
+  width: 30px;
+  margin: 0;
+  background-color: grey;
+  border: solid 1px black;
+}
+
+.cell:hover {
+  background-color: rgb(109, 109, 109);
+}
