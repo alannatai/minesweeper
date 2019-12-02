@@ -81,82 +81,89 @@ for (let i = 0; i < gameboard.length; i++) {
 }
 
 //GENERATE RANDOM MINES INTO GAMEBOARD
-const generateMines = function() {
+function generateMines() {
 	for (let i = 0; i < mineCount; i++) {
 		let randomMines = Math.floor(Math.random() * cells.length);
 		let mine = cells[randomMines];
 		gameboard[mine[0]][mine[1]] = 'mine';
-		$(`#${mine[0]}${mine[1]}`).css('background-color', 'red');
+		$(`#${mine[0]}${mine[1]}`).css('background-color', 'red').html(`&#128163;`);
 		cells.splice(randomMines, 1);
 	}
-};
+}
 
 generateMines();
 
 //CHECK ADJACENT MINES
 let adjMineCount = 0;
 
-const checkN = function(cellRow, cellColumn) {
+function checkN(cellRow, cellColumn) {
 	if (cellRow - 1 === -1) {
 		return;
 	} else if (gameboard[cellRow - 1][cellColumn] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkNE = function(cellRow, cellColumn) {
+}
+function checkNE(cellRow, cellColumn) {
 	if (cellRow - 1 === -1 || cellColumn + 1 >= columns) {
 		return;
 	} else if (gameboard[cellRow - 1][cellColumn + 1] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkE = function(cellRow, cellColumn) {
+}
+function checkE(cellRow, cellColumn) {
 	if (cellColumn + 1 >= columns) {
 		return;
 	} else if (gameboard[cellRow][cellColumn + 1] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkSE = function(cellRow, cellColumn) {
+}
+function checkSE(cellRow, cellColumn) {
 	if (cellRow + 1 >= rows || cellColumn + 1 >= columns) {
 		return;
 	} else if (gameboard[cellRow + 1][cellColumn + 1] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkS = function(cellRow, cellColumn) {
+}
+function checkS(cellRow, cellColumn) {
 	if (cellRow + 1 >= rows) {
 		return;
 	} else if (gameboard[cellRow + 1][cellColumn] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkSW = function(cellRow, cellColumn) {
+}
+function checkSW(cellRow, cellColumn) {
 	if (cellRow + 1 >= rows || cellColumn - 1 === -1) {
 		return;
 	} else if (gameboard[cellRow + 1][cellColumn - 1] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkW = function(cellRow, cellColumn) {
+}
+function checkW(cellRow, cellColumn) {
 	if (cellColumn - 1 === -1) {
 		return;
 	} else if (gameboard[cellRow][cellColumn - 1] === 'mine') {
 		adjMineCount += 1;
 	}
-};
-const checkNW = function(cellRow, cellColumn) {
+}
+function checkNW(cellRow, cellColumn) {
 	if (cellRow - 1 === -1 || cellColumn - 1 === -1) {
 		return;
 	} else if (gameboard[cellRow - 1][cellColumn - 1] === 'mine') {
 		adjMineCount += 1;
 	}
-};
+}
 
-//CALCULATE CELLS ADJACENT TO MINES
-const generateAdjacent = function() {
+//refactor checking functions*****
+function check(row, column) {
+  if (row - 1 === -1 || column - 1 === -1 || row + 1 >= rows || column + 1 >= columns) {
+    return;
+  } 
+}
+
+//CALCULATE AND PRINT CELLS ADJACENT TO MINES
+function generateAdjacent() {
 	for (let r = 0; r < gameboard.length; r++) {
-    for (let c = 0; c < gameboard[r].length; c++) {
+		for (let c = 0; c < gameboard[r].length; c++) {
 			checkN(r, c);
 			checkNE(r, c);
 			checkE(r, c);
@@ -164,17 +171,33 @@ const generateAdjacent = function() {
 			checkS(r, c);
 			checkSW(r, c);
 			checkW(r, c);
-      checkNW(r, c);
-      if (!(gameboard[r][c] === 'mine')) {
-        gameboard[r][c] = adjMineCount;
-        $(`#${r}${c}`).text(`${adjMineCount}`);
-      }
-      adjMineCount = 0;
+			checkNW(r, c);
+			if (!(gameboard[r][c] === 'mine')) {
+				gameboard[r][c] = adjMineCount;
+				$(`#${r}${c}`).text(`${adjMineCount}`);
+			}
+			adjMineCount = 0;
 		}
 	}
-};
+}
+
+//optimize code to loop 10 times, check area around each mine and +1 to all squares surrounding
+// then increment for every adjacent mine
 
 generateAdjacent();
 
 console.log('cells:', cells);
 console.log('gameboard:', gameboard);
+
+//ON CELL CLICK EVENT HANDLER
+$('.cell').on('click', function() {
+	let cell = gameboard[this.id[0]][this.id[1]];
+	console.log(cell);
+	if (cell === 'mine') {
+		$('#status-message').text('GAME OVER');
+	} else if (cell > 0) {
+		console.log('show');
+	} else if (cell === 0) {
+    console.log('clear')
+  }
+});

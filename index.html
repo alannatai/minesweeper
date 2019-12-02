@@ -5,6 +5,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<link rel="stylesheet" href="css/main.css" />
+		<link
+			href="https://fonts.googleapis.com/css?family=Share+Tech+Mono&display=swap"
+			rel="stylesheet"
+		/>
 		<script defer src="js/main.js"></script>
 		<script
 			src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -14,11 +18,14 @@
 		<title>Minesweeper</title>
 	</head>
 	<body>
-		<header>
-			<h1>MINESWEEPER</h1>
-		</header>
-		<section>
-			<div id="board"></div>
-		</section>
+		<div id="game-container">
+			<header>
+        <h1>MINESWEEPER</h1>
+        <p id="status-message"></p>
+			</header>
+			<section>
+				<div id="board"></div>
+			</section>
+		</div>
 	</body>
 </html>

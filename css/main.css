@@ -2,6 +2,23 @@
   box-sizing: border-box;
 }
 
+body {
+  font-family: 'Share Tech Mono', monospace;
+}
+
+#game-container {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+header {
+  margin: 20px;
+  text-align: right;
+}
+
 #board {
   display: flex;
   flex-wrap: wrap;
@@ -12,8 +29,9 @@
   height: 30px;
   width: 30px;
   margin: 0;
-  background-color: grey;
+  background-color: rgb(185, 185, 185);
   border: solid 1px black;
+  font-size: 25px;
 }
 
 .cell:hover {
