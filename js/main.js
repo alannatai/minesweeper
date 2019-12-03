@@ -68,7 +68,7 @@ function createGameboard(length, value) {
 	return new Array(length).fill(value);
 }
 let gameboard = createGameboard(rows, null).map(() =>
-	createGameboard(columns, '0')
+	createGameboard(columns, 0)
 );
 
 //RENDER GAMEBOARD INTO DOM
@@ -85,9 +85,28 @@ function generateMines() {
 	for (let i = 0; i < mineCount; i++) {
 		let randomMines = Math.floor(Math.random() * cells.length);
 		let mine = cells[randomMines];
-		gameboard[mine[0]][mine[1]] = 'mine';
-		$(`#${mine[0]}${mine[1]}`).css('background-color', 'red').html(`&#128163;`);
-		cells.splice(randomMines, 1);
+
+		gameboard[mine[0]][mine[1]] = 'mine'; //set mines into gameboard
+		//set mines into DOM
+		cells.splice(randomMines, 1); //remove mines from cells array
+
+		//check adjcent spaces to mines
+		//if not outside board, add +1 to every adjacent cell
+		// let row = mine[0];
+		// let column = mine[1];
+
+		// if ((gameboard[row][column] === 'mine')) {
+		//   check(gameboard, row, column);
+		// }
+
+		// gameboard[row][column + 1] += 1;
+		// gameboard[row + 1][column] += 1;
+		// gameboard[row + 1][column + 1] += 1;
+		// gameboard[row - 1][column] += 1;
+		// gameboard[row - 1][column + 1] += 1;
+		// gameboard[row + 1][column - 1] += 1;
+		// gameboard[row][column - 1] += 1;
+		// gameboard[row - 1][column - 1] += 1;
 	}
 }
 
@@ -154,10 +173,15 @@ function checkNW(cellRow, cellColumn) {
 }
 
 //refactor checking functions*****
-function check(row, column) {
-  if (row - 1 === -1 || column - 1 === -1 || row + 1 >= rows || column + 1 >= columns) {
-    return;
-  } 
+function check(cellRow, cellColumn) {
+	if (
+		cellRow - 1 === -1 ||
+		cellColumn - 1 === -1 ||
+		cellRow + 1 >= rows ||
+		cellColumn + 1 >= columns
+	) {
+		return;
+	}
 }
 
 //CALCULATE AND PRINT CELLS ADJACENT TO MINES
@@ -174,7 +198,6 @@ function generateAdjacent() {
 			checkNW(r, c);
 			if (!(gameboard[r][c] === 'mine')) {
 				gameboard[r][c] = adjMineCount;
-				$(`#${r}${c}`).text(`${adjMineCount}`);
 			}
 			adjMineCount = 0;
 		}
@@ -187,7 +210,7 @@ function generateAdjacent() {
 generateAdjacent();
 
 console.log('cells:', cells);
-console.log('gameboard:', gameboard);
+console.table(gameboard);
 
 //ON CELL CLICK EVENT HANDLER
 $('.cell').on('click', function() {
@@ -195,9 +218,82 @@ $('.cell').on('click', function() {
 	console.log(cell);
 	if (cell === 'mine') {
 		$('#status-message').text('GAME OVER');
+		$(`#${this.id[0]}${this.id[1]}`)
+			.css('background-color', 'red')
+			.html(`&#128163;`);
 	} else if (cell > 0) {
-		console.log('show');
+		$(`#${this.id[0]}${this.id[1]}`).text(
+			`${gameboard[this.id[0]][this.id[1]]}`
+		);
 	} else if (cell === 0) {
-    console.log('clear')
-  }
+		$(`#${this.id[0]}${this.id[1]}`).text(
+			`${gameboard[this.id[0]][this.id[1]]}`
+		);
+    show(this.id[0], this.id[1]);
+    console.table(gameboard);
+	}
 });
+
+function show(row, column) {
+	let rowNum = parseInt(row);
+  let columnNum = parseInt(column);
+  
+	if (rowNum - 1 === -1) {
+    
+	} else if (gameboard[rowNum - 1][columnNum] === 0) {
+    $(`#${rowNum - 1}${columnNum}`).text(`${gameboard[rowNum - 1][columnNum]}`);
+    gameboard[rowNum - 1][columnNum] = null;
+		show(rowNum - 1, columnNum);
+	}
+
+	if (rowNum - 1 === -1 || columnNum - 1 === -1) {
+	} else if (gameboard[rowNum - 1][columnNum - 1] === 0) {
+    $(`#${rowNum - 1}${columnNum - 1}`).text(`${gameboard[rowNum - 1][columnNum - 1]}`);
+    gameboard[rowNum - 1][columnNum - 1] = null;
+		show(rowNum - 1, columnNum - 1);
+	}
+
+	if (rowNum - 1 === -1 || columnNum + 1 >= columns) {
+	} else if (gameboard[rowNum - 1][columnNum + 1] === 0) {
+    $(`#${rowNum - 1}${columnNum + 1}`).text(`${gameboard[rowNum - 1][columnNum + 1]}`);
+    gameboard[rowNum - 1][columnNum + 1] = null;
+		 show(rowNum - 1, columnNum + 1);
+	}
+
+	if (columnNum - 1 === -1) {
+	} else if (gameboard[rowNum][columnNum - 1] === 0) {
+    $(`#${rowNum}${columnNum - 1}`).text(`${gameboard[rowNum][columnNum - 1]}`);
+    gameboard[rowNum][columnNum - 1] = null;
+		show(rowNum, columnNum - 1);
+	}
+
+	if (columnNum + 1 >= columns) {
+	} else if (gameboard[rowNum][columnNum + 1] === 0) {
+    $(`#${rowNum}${columnNum + 1}`).text(`${gameboard[rowNum][columnNum + 1]}`);
+    gameboard[rowNum][columnNum + 1] = null;
+		show(rowNum, columnNum + 1);
+	}
+
+	if (rowNum + 1 >= rows || columnNum - 1 === -1) {
+	} else if (gameboard[rowNum + 1][columnNum - 1] === 0) {
+    $(`#${rowNum + 1}${columnNum - 1}`).text(`${gameboard[rowNum + 1][columnNum - 1]}`);
+    gameboard[rowNum + 1][columnNum - 1] = null;
+		show(rowNum + 1, columnNum - 1);
+	}
+
+	if (rowNum + 1 >= rows) {
+	} else if (gameboard[rowNum + 1][columnNum] === 0) {
+    $(`#${rowNum + 1}${columnNum}`).text(`${gameboard[rowNum + 1][columnNum]}`);
+    gameboard[rowNum + 1][columnNum] = null;
+		show(rowNum + 1, columnNum);
+	}
+
+	if (rowNum + 1 >= rows || columnNum + 1 >= columns) {
+	} else if (gameboard[rowNum + 1][columnNum + 1] === 0) {
+    $(`#${rowNum + 1}${columnNum + 1}`).text(`${gameboard[rowNum + 1][columnNum + 1]}`);
+    gameboard[rowNum + 1][columnNum + 1] = null;
+		show(rowNum + 1, columnNum + 1);
+	}
+}
+
+
