@@ -244,15 +244,16 @@ function clickHandler(event) {
   console.log(cell);
   
 	if (cell === 'mine') {
-		$('#status-message').text('GAME OVER');
+		$('#status-message').text('GAME OVER').css('color', 'red');
 		cellEl
 			.css('background-color', 'red')
-			.html(`&#128163;`);
+      .html(`&#128163;`);
+      $('.cell').off('click', clickHandler);
 	} else if (cell > 0) {
-		cellEl.text(`${cell}`);
+		cellEl.text(`${cell}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
 	} else if (cell === 0) {
-		cellEl.text(`${cell}`);
+		cellEl.css('background-color', 'silver');
     show($this.id[0], $this.id[1]);
     cell = null;
     safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
@@ -268,89 +269,89 @@ function show(row, column) {
   
 	if (rowNum - 1 === -1) {
 	} else if (gameboard[rowNum - 1][columnNum] === 0) {
-    $(`#${rowNum - 1}${columnNum}`).text(`${gameboard[rowNum - 1][columnNum]}`);
+    $(`#${rowNum - 1}${columnNum}`).css('background-color', 'silver');
     gameboard[rowNum - 1][columnNum] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum - 1}${columnNum}`)] = 'opened';
     show(rowNum - 1, columnNum);
 	} else if (gameboard[rowNum - 1][columnNum] > 0) {
-    $(`#${rowNum - 1}${columnNum}`).text(`${gameboard[rowNum - 1][columnNum]}`);
+    $(`#${rowNum - 1}${columnNum}`).text(`${gameboard[rowNum - 1][columnNum]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum - 1}${columnNum}`)] = 'opened';
   }
 
 	if (rowNum - 1 === -1 || columnNum - 1 === -1) {
 	} else if (gameboard[rowNum - 1][columnNum - 1] === 0) {
-    $(`#${rowNum - 1}${columnNum - 1}`).text(`${gameboard[rowNum - 1][columnNum - 1]}`);
+    $(`#${rowNum - 1}${columnNum - 1}`).css('background-color', 'silver');
     gameboard[rowNum - 1][columnNum - 1] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum - 1}${columnNum - 1}`)] = 'opened';
 		show(rowNum - 1, columnNum - 1);
 	} else if (gameboard[rowNum - 1][columnNum - 1] > 0) {
-    $(`#${rowNum - 1}${columnNum - 1}`).text(`${gameboard[rowNum - 1][columnNum - 1]}`);
+    $(`#${rowNum - 1}${columnNum - 1}`).text(`${gameboard[rowNum - 1][columnNum - 1]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum - 1}${columnNum - 1}`)] = 'opened';
   }
 
 	if (rowNum - 1 === -1 || columnNum + 1 >= columns) {
 	} else if (gameboard[rowNum - 1][columnNum + 1] === 0) {
-    $(`#${rowNum - 1}${columnNum + 1}`).text(`${gameboard[rowNum - 1][columnNum + 1]}`);
+    $(`#${rowNum - 1}${columnNum + 1}`).css('background-color', 'silver');
     gameboard[rowNum - 1][columnNum + 1] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum - 1}${columnNum + 1}`)] = 'opened';
 		 show(rowNum - 1, columnNum + 1);
 	} else if (gameboard[rowNum - 1][columnNum + 1] > 0) {
-    $(`#${rowNum - 1}${columnNum + 1}`).text(`${gameboard[rowNum - 1][columnNum + 1]}`);
+    $(`#${rowNum - 1}${columnNum + 1}`).text(`${gameboard[rowNum - 1][columnNum + 1]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum - 1}${columnNum + 1}`)] = 'opened';
   }
 
 	if (columnNum - 1 === -1) {
 	} else if (gameboard[rowNum][columnNum - 1] === 0) {
-    $(`#${rowNum}${columnNum - 1}`).text(`${gameboard[rowNum][columnNum - 1]}`);
+    $(`#${rowNum}${columnNum - 1}`).css('background-color', 'silver');
     gameboard[rowNum][columnNum - 1] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum}${columnNum - 1}`)] = 'opened';
 		show(rowNum, columnNum - 1);
 	} else if (gameboard[rowNum][columnNum - 1] > 0) {
-    $(`#${rowNum}${columnNum - 1}`).text(`${gameboard[rowNum][columnNum - 1]}`);
+    $(`#${rowNum}${columnNum - 1}`).text(`${gameboard[rowNum][columnNum - 1]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum}${columnNum - 1}`)] = 'opened';
   }
 
 	if (columnNum + 1 >= columns) {
 	} else if (gameboard[rowNum][columnNum + 1] === 0) {
-    $(`#${rowNum}${columnNum + 1}`).text(`${gameboard[rowNum][columnNum + 1]}`);
+    $(`#${rowNum}${columnNum + 1}`).css('background-color', 'silver');
     gameboard[rowNum][columnNum + 1] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum}${columnNum + 1}`)] = 'opened';
 		show(rowNum, columnNum + 1);
 	} else if (gameboard[rowNum][columnNum + 1] > 0) {
-    $(`#${rowNum}${columnNum + 1}`).text(`${gameboard[rowNum][columnNum + 1]}`);
+    $(`#${rowNum}${columnNum + 1}`).text(`${gameboard[rowNum][columnNum + 1]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum}${columnNum + 1}`)] = 'opened';
   }
 
 	if (rowNum + 1 >= rows || columnNum - 1 === -1) {
 	} else if (gameboard[rowNum + 1][columnNum - 1] === 0) {
-    $(`#${rowNum + 1}${columnNum - 1}`).text(`${gameboard[rowNum + 1][columnNum - 1]}`);
+    $(`#${rowNum + 1}${columnNum - 1}`).css('background-color', 'silver');
     gameboard[rowNum + 1][columnNum - 1] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum + 1}${columnNum - 1}`)] = 'opened';
 		show(rowNum + 1, columnNum - 1);
 	} else if (gameboard[rowNum + 1][columnNum - 1] > 0) {
-    $(`#${rowNum + 1}${columnNum - 1}`).text(`${gameboard[rowNum + 1][columnNum - 1]}`);
+    $(`#${rowNum + 1}${columnNum - 1}`).text(`${gameboard[rowNum + 1][columnNum - 1]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum + 1}${columnNum - 1}`)] = 'opened';
   }
 
 	if (rowNum + 1 >= rows) {
 	} else if (gameboard[rowNum + 1][columnNum] === 0) {
-    $(`#${rowNum + 1}${columnNum}`).text(`${gameboard[rowNum + 1][columnNum]}`);
+    $(`#${rowNum + 1}${columnNum}`).css('background-color', 'silver');
     gameboard[rowNum + 1][columnNum] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum + 1}${columnNum}`)] = 'opened';
 		show(rowNum + 1, columnNum);
 	} else if (gameboard[rowNum + 1][columnNum] > 0) {
-    $(`#${rowNum + 1}${columnNum}`).text(`${gameboard[rowNum + 1][columnNum]}`);
+    $(`#${rowNum + 1}${columnNum}`).text(`${gameboard[rowNum + 1][columnNum]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum + 1}${columnNum}`)] = 'opened';
   }
 
 	if (rowNum + 1 >= rows || columnNum + 1 >= columns) {
 	} else if (gameboard[rowNum + 1][columnNum + 1] === 0) {
-    $(`#${rowNum + 1}${columnNum + 1}`).text(`${gameboard[rowNum + 1][columnNum + 1]}`);
+    $(`#${rowNum + 1}${columnNum + 1}`).css('background-color', 'silver');
     gameboard[rowNum + 1][columnNum + 1] = null;
     safeCellsIds[safeCellsIds.indexOf(`${rowNum + 1}${columnNum + 1}`)] = 'opened';
 		show(rowNum + 1, columnNum + 1);
   } else if (gameboard[rowNum + 1][columnNum + 1] > 0) {
-    $(`#${rowNum + 1}${columnNum + 1}`).text(`${gameboard[rowNum + 1][columnNum + 1]}`);
+    $(`#${rowNum + 1}${columnNum + 1}`).text(`${gameboard[rowNum + 1][columnNum + 1]}`).css('background-color', 'silver');
     safeCellsIds[safeCellsIds.indexOf(`${rowNum + 1}${columnNum + 1}`)] = 'opened';
   }
   winCheck();
@@ -361,7 +362,9 @@ function winCheck() {
   let allOpened = safeCellsIds.every((val) => val === 'opened');
 
   if (allOpened) {
-    $('#status-message').text('YOU WIN!');
+    $('#status-message').text('YOU WIN!').css('color', 'cornflowerblue');
+    $('.cell').off('click', clickHandler);
+    $('#fireworks').addClass('img-show');
   }
 }
 

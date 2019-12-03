@@ -1,39 +1,60 @@
-*, *::after, *::before {
-  box-sizing: border-box;
+*,
+*::after,
+*::before {
+	box-sizing: border-box;
 }
 
 body {
-  font-family: 'Share Tech Mono', monospace;
+	font-family: 'Share Tech Mono', monospace;
 }
 
 #game-container {
-  width: 100vw;
-  height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+	width: 100vw;
+	height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
 }
 
 header {
-  margin: 20px;
-  text-align: right;
+	margin: 20px;
+	text-align: right;
+}
+
+img {
+  display: none;
+}
+
+.img-show {
+  display: inline-block;
+  position: fixed;
+  height: 290px; 
+  margin-left: 20px;
+}
+
+#status-message {
+  font-size: 20px;
 }
 
 #board {
-  display: flex;
-  flex-wrap: wrap;
-  width: 270px;
+	display: flex;
+	flex-wrap: wrap;
+	width: 270px;
+
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	user-select: none; /* Non-prefixed version, currently supported by Chrome, Opera and Firefox */
 }
 
 .cell {
-  height: 30px;
-  width: 30px;
-  margin: 0;
-  background-color: rgb(185, 185, 185);
-  border: solid 1px black;
-  font-size: 25px;
+	height: 30px;
+	width: 30px;
+	margin: 0;
+	background-color: rgb(228, 228, 228);
+	border: solid 1px black;
+	font-size: 25px;
 }
 
 .cell:hover {
-  background-color: rgb(109, 109, 109);
+	background-color: white;
 }
