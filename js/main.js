@@ -230,6 +230,7 @@ $('.cell').on('click', function() {
 			`${gameboard[this.id[0]][this.id[1]]}`
 		);
     show(this.id[0], this.id[1]);
+    gameboard[this.id[0]][this.id[1]] = null;
     console.table(gameboard);
 	}
 });
@@ -239,61 +240,77 @@ function show(row, column) {
   let columnNum = parseInt(column);
   
 	if (rowNum - 1 === -1) {
-    
 	} else if (gameboard[rowNum - 1][columnNum] === 0) {
     $(`#${rowNum - 1}${columnNum}`).text(`${gameboard[rowNum - 1][columnNum]}`);
     gameboard[rowNum - 1][columnNum] = null;
-		show(rowNum - 1, columnNum);
-	}
+    show(rowNum - 1, columnNum);
+	} else if (gameboard[rowNum - 1][columnNum] > 0) {
+    $(`#${rowNum - 1}${columnNum}`).text(`${gameboard[rowNum - 1][columnNum]}`);
+  }
 
 	if (rowNum - 1 === -1 || columnNum - 1 === -1) {
 	} else if (gameboard[rowNum - 1][columnNum - 1] === 0) {
     $(`#${rowNum - 1}${columnNum - 1}`).text(`${gameboard[rowNum - 1][columnNum - 1]}`);
     gameboard[rowNum - 1][columnNum - 1] = null;
 		show(rowNum - 1, columnNum - 1);
-	}
+	} else if (gameboard[rowNum - 1][columnNum - 1] > 0) {
+    $(`#${rowNum - 1}${columnNum - 1}`).text(`${gameboard[rowNum - 1][columnNum - 1]}`);
+  }
 
 	if (rowNum - 1 === -1 || columnNum + 1 >= columns) {
 	} else if (gameboard[rowNum - 1][columnNum + 1] === 0) {
     $(`#${rowNum - 1}${columnNum + 1}`).text(`${gameboard[rowNum - 1][columnNum + 1]}`);
     gameboard[rowNum - 1][columnNum + 1] = null;
 		 show(rowNum - 1, columnNum + 1);
-	}
+	} else if (gameboard[rowNum - 1][columnNum + 1] > 0) {
+    $(`#${rowNum - 1}${columnNum + 1}`).text(`${gameboard[rowNum - 1][columnNum + 1]}`);
+  }
 
 	if (columnNum - 1 === -1) {
 	} else if (gameboard[rowNum][columnNum - 1] === 0) {
     $(`#${rowNum}${columnNum - 1}`).text(`${gameboard[rowNum][columnNum - 1]}`);
     gameboard[rowNum][columnNum - 1] = null;
 		show(rowNum, columnNum - 1);
-	}
+	} else if (gameboard[rowNum][columnNum - 1] > 0) {
+    $(`#${rowNum}${columnNum - 1}`).text(`${gameboard[rowNum][columnNum - 1]}`);
+  }
 
 	if (columnNum + 1 >= columns) {
 	} else if (gameboard[rowNum][columnNum + 1] === 0) {
     $(`#${rowNum}${columnNum + 1}`).text(`${gameboard[rowNum][columnNum + 1]}`);
     gameboard[rowNum][columnNum + 1] = null;
 		show(rowNum, columnNum + 1);
-	}
+	} else if (gameboard[rowNum][columnNum + 1] > 0) {
+    $(`#${rowNum}${columnNum + 1}`).text(`${gameboard[rowNum][columnNum + 1]}`);
+  }
 
 	if (rowNum + 1 >= rows || columnNum - 1 === -1) {
 	} else if (gameboard[rowNum + 1][columnNum - 1] === 0) {
     $(`#${rowNum + 1}${columnNum - 1}`).text(`${gameboard[rowNum + 1][columnNum - 1]}`);
     gameboard[rowNum + 1][columnNum - 1] = null;
 		show(rowNum + 1, columnNum - 1);
-	}
+	} else if (gameboard[rowNum + 1][columnNum - 1] > 0) {
+    $(`#${rowNum + 1}${columnNum - 1}`).text(`${gameboard[rowNum + 1][columnNum - 1]}`);
+  }
 
 	if (rowNum + 1 >= rows) {
 	} else if (gameboard[rowNum + 1][columnNum] === 0) {
     $(`#${rowNum + 1}${columnNum}`).text(`${gameboard[rowNum + 1][columnNum]}`);
     gameboard[rowNum + 1][columnNum] = null;
 		show(rowNum + 1, columnNum);
-	}
+	} else if (gameboard[rowNum + 1][columnNum] > 0) {
+    $(`#${rowNum + 1}${columnNum}`).text(`${gameboard[rowNum + 1][columnNum]}`);
+  }
 
 	if (rowNum + 1 >= rows || columnNum + 1 >= columns) {
 	} else if (gameboard[rowNum + 1][columnNum + 1] === 0) {
     $(`#${rowNum + 1}${columnNum + 1}`).text(`${gameboard[rowNum + 1][columnNum + 1]}`);
     gameboard[rowNum + 1][columnNum + 1] = null;
 		show(rowNum + 1, columnNum + 1);
-	}
+  } else if (gameboard[rowNum + 1][columnNum + 1] > 0) {
+    $(`#${rowNum + 1}${columnNum + 1}`).text(`${gameboard[rowNum + 1][columnNum + 1]}`);
+  }
 }
 
-
+//use cells to calculate opened to figure out win?
+//right click toggle flag
