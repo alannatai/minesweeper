@@ -213,8 +213,6 @@ generateAdjacent();
 
 let safeCellsIds = safeCells.map(cell => cell.join(''));
 console.log(safeCellsIds)
-
-console.log('safeCells:', safeCells);
 console.table(gameboard);
 
 //RIGHT CLICK EVENT HANDLER TO PLACE AND REMOVE FLAGS
@@ -224,19 +222,24 @@ $('.cell').mousedown(function(event) {
   if (event.which === 3) {
     const $this = $(this);
     $this.toggleClass('flagged');
-
+    
     if ($this.hasClass('flagged')){
       cellEl.html('');
+      cellEl.on('click', clickHandler);
     } else {
       cellEl.html(`&#128681;`);  
+     cellEl.off('click', clickHandler);
     }
   }
 });
 
 //ON CELL CLICK EVENT HANDLER
-$('.cell').on('click', function() {
-  let cell = gameboard[this.id[0]][this.id[1]];
-  let cellEl = $(`#${this.id[0]}${this.id[1]}`);
+$('.cell').on('click', clickHandler);
+
+function clickHandler(event) {
+  let $this = event.target
+  let cell = gameboard[$this.id[0]][$this.id[1]];
+  let cellEl = $(`#${$this.id[0]}${$this.id[1]}`);
   
   console.log(cell);
   
@@ -247,17 +250,17 @@ $('.cell').on('click', function() {
 			.html(`&#128163;`);
 	} else if (cell > 0) {
 		cellEl.text(`${cell}`);
-    safeCellsIds[safeCellsIds.indexOf(this.id)] = 'opened';
+    safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
 	} else if (cell === 0) {
 		cellEl.text(`${cell}`);
-    show(this.id[0], this.id[1]);
+    show($this.id[0], $this.id[1]);
     cell = null;
-    safeCellsIds[safeCellsIds.indexOf(this.id)] = 'opened';
+    safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
   }
   winCheck();
   console.table(gameboard);
   console.log(safeCellsIds);
-});
+};
 
 function show(row, column) {
 	let rowNum = parseInt(row);
