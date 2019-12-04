@@ -90,24 +90,6 @@ function generateMines() {
 		gameboard[mine[0]][mine[1]] = 'mine'; //set mines into gameboard
 		//set mines into DOM
 		safeCells.splice(randomMines, 1); //remove mines from cells array
-
-		//check adjcent spaces to mines
-		//if not outside board, add +1 to every adjacent cell
-		// let row = mine[0];
-		// let column = mine[1];
-
-		// if ((gameboard[row][column] === 'mine')) {
-		//   check(gameboard, row, column);
-		// }
-
-		// gameboard[row][column + 1] += 1;
-		// gameboard[row + 1][column] += 1;
-		// gameboard[row + 1][column + 1] += 1;
-		// gameboard[row - 1][column] += 1;
-		// gameboard[row - 1][column + 1] += 1;
-		// gameboard[row + 1][column - 1] += 1;
-		// gameboard[row][column - 1] += 1;
-		// gameboard[row - 1][column - 1] += 1;
 	}
 }
 
