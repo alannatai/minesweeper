@@ -1,18 +1,21 @@
-//STATE
-let rows = 9;
-let columns = 9;
-let mineCount = 10;
-let safeCells = [];
-let safeCellsIds;
+//CONSTANTS
+let rows = 16;
+let columns = 16;
+let mineCount = 40;
 const numColours = {
   1: 'blue',
   2: 'green',
   3: 'red',
   4: 'navy',
   5: 'brown',
-  6: 'teal'
+  6: 'teal',
+  7: 'black',
+  8: 'grey'
 }
 let gameboard;
+let cellStateBoard;
+let safeCells = [];
+let safeCellsIds;
 
 //CREATE BLANK GAMEBOARD FROM ROW/COLUMN SIZE
 function createRow(length, value) {
@@ -20,8 +23,8 @@ function createRow(length, value) {
 }
 
 function createGameboard () {
-  let board = createRow(rows, null).map(() => createRow(columns, 0));
-  gameboard = board;
+  let mappedBoard = createRow(rows, null).map(() => createRow(columns, 0));
+  return mappedBoard;
 }
 
 //RENDER GAMEBOARD INTO DOM
@@ -30,7 +33,7 @@ function generateGameboard() {
   for (let i = 0; i < gameboard.length; i++) {
     for (let j = 0; j < gameboard[i].length; j++) {
       const cellEl = $('<div></div>').addClass('cell');
-      $('#board').append(cellEl.attr('id', `${i}${j}`));
+      $('#board').append(cellEl.attr('id', `${i}-${j}`));
       safeCells.push([i, j]);
     }
   }
@@ -39,15 +42,11 @@ function generateGameboard() {
 		let randomMines = Math.floor(Math.random() * safeCells.length);
 		let mine = safeCells[randomMines];
 
-		gameboard[mine[0]][mine[1]] = 'mine'; //set mines into gameboard
-		//set mines into DOM
-		safeCells.splice(randomMines, 1); //remove mines from cells array
-	}
-}
-
-function generateCellOpenedState() {
-  let ids = safeCells.map(cell => cell.join(''));
-  safeCellsIds = ids;
+    gameboard[mine[0]][mine[1]] = 'mine'; //set mines into gameboard
+    cellStateBoard[mine[0]][mine[1]] = 'opened';
+		
+		safeCells.splice(randomMines, 1); //remove mines from cells array to avoid repeating mines
+  }
 }
 
 let adjMineCount = 0
@@ -78,31 +77,32 @@ function generateAdjacent() {
       
       //SET CELL TO MINE COUNT
 			if (!(gameboard[row][col] === 'mine')) {
-				gameboard[row][col] = adjMineCount;
+        gameboard[row][col] = adjMineCount;
       }
       //RESET MINE COUNT
       adjMineCount = 0;
     }
-	}
+  }
 }
 
 function init() {
   gameboard = null;
+  cellStateBoard = null;
   safeCells = [];
-  safeCellsIds = null;
   $('#board').empty(); 
   $('#status-message').text('');
   $('#fireworks').removeClass('img-show');
-  createGameboard();
+  gameboard = createGameboard();
+  cellStateBoard = createGameboard();
   generateGameboard();
   generateAdjacent();
-  generateCellOpenedState();
 
   $('#reset').on('click', init);
   $('.cell').on('click', clickHandler); 
   $('.cell').mousedown(rightClickHandler);
-  console.log(safeCellsIds)
-  console.table(gameboard)
+
+  console.log('gameboard', gameboard)
+  console.log('cellState', cellStateBoard)
 }
 
 init();
@@ -111,12 +111,10 @@ init();
 //check area around each mine and +1 to all squares surrounding
 //then increment for every adjacent mine
 
-console.log(safeCellsIds);
-console.table(gameboard);
-
 //RIGHT CLICK EVENT HANDLER TO PLACE AND REMOVE FLAGS
 function rightClickHandler(event) {
-  let cellEl = $(`#${this.id[0]}${this.id[1]}`);
+  let $this = event.target;
+  let cellEl = $(`#${$this.id}`);
 
 	if (event.which === 3) {
 		const $this = $(this);
@@ -134,26 +132,26 @@ function rightClickHandler(event) {
 
 //ON CELL CLICK EVENT HANDLER
 function clickHandler(event) {
-	let $this = event.target;
-	let cell = gameboard[$this.id[0]][$this.id[1]];
-	let cellEl = $(`#${$this.id[0]}${$this.id[1]}`);
+  let $this = event.target;
+  let idArray = $this.id.split('-');
+  let cell = gameboard[idArray[0]][idArray[1]];
+  let cellEl = $(`#${$this.id}`)
 
   console.log(cell);
-  console.log(numColours[cell]);
 
 	if (cell === 'mine') {
-		$('#status-message').text('GAME OVER').css('color', 'red');
+    $('#status-message').text('GAME OVER').css('color', 'red');
 		cellEl.css('background', 'red').html(`&#128163;`);
 		$('.cell').off('click', clickHandler);
 	} else if (cell > 0) {
-		cellEl.text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
-		safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
+    cellEl.text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
+    cellStateBoard[+idArray[0]][+idArray[1]] = 'opened';
 	} else if (cell === 0) {
-		show($this.id[0], $this.id[1]);
+		show(+idArray[0], +idArray[1]);
 	}
 	winCheck();
-	console.table(gameboard);
-	console.log(safeCellsIds);
+	console.log(gameboard);
+	console.log(cellStateBoard);
 }
 
 function showCheck(row, column){
@@ -162,16 +160,16 @@ function showCheck(row, column){
     if (cell === 0) {
       show(row, column);
     } else if (cell > 0) {
-      $(`#${row}${column}`).text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
-      safeCellsIds[safeCellsIds.indexOf(`${row}${column}`)] = 'opened';
+      $(`#${row}-${column}`).text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
+      cellStateBoard[row][column] = 'opened';
     }
   }
 }
 
 function show(row, column) {
-	$(`#${+row}${+column}`).css('background', 'silver');
+	$(`#${+row}-${+column}`).css('background', 'silver');
 	gameboard[+row][+column] = null;
-	safeCellsIds[safeCellsIds.indexOf(`${+row}${+column}`)] = 'opened';
+	cellStateBoard[+row][+column] = 'opened';
 
   showCheck(+row - 1, +column);
   showCheck(+row - 1, +column - 1);
@@ -187,7 +185,10 @@ function show(row, column) {
 
 //WIN CONDITION
 function winCheck() {
-	let allOpened = safeCellsIds.every(val => val === 'opened');
+	let allOpened = cellStateBoard.every(array => {
+    let allOpenedValues = array.every(val => val === 'opened')
+    return allOpenedValues;
+  });
 
 	if (allOpened) {
 		$('#status-message')
