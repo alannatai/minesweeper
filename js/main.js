@@ -1,62 +1,3 @@
-/*
-generate mines
-- certain amount of mines for a certain size of board 9x9 has 10mines
-- mines should not be generated in the same spot
-
-generate board
-- loop through each cell 
-- check if cell has a mine
-- if it doesnt then does it have a mine next to it
-- depending on how many mines, assign that cell a number
-- if no mines, leave blank
-
-cell has 3 states
-- shown
-- flagged
-- bombed
-
-when cell clicked
-- check if has bomb, game over
-- if number, show
-- if empty, clear spot and check adjacent spots
-  - loop through adjacent spots, if empty clear spot
-
-when right clicked
-- show flag
-
-right click number
-- clear all spots adjacent to it except for flags
-
-win
-- all cells that are not bombs are "flipped" or shown
-*/
-
-// class Cell {
-// 	constructor(row, column, id, open, flag, mine) {
-// 		this.row = row;
-// 		this.column = column;
-// 		this.id = `${row}${column}`;
-// 		this.open = false;
-// 		this.flag = false;
-// 		this.mine = false;
-// 	}
-// }
-
-// class Game {
-//   constructor (rows, columns, mines) {
-//     this.rows = 9;
-//     this.columns = 9;
-//     this.mines = 10;
-//     this.board = new Array(this.rows);
-//   }
-
-//     const cellEl = $('<div></div>').addClass('cell').attr('id');
-//     $('#board').append();
-//     console.log($('#board'))
-//     }
-
-// }
-
 //STATE
 let rows = 9;
 let columns = 9;
@@ -180,84 +121,38 @@ function clickHandler(event) {
 		cellEl.text(`${cell}`).css('background-color', 'silver');
 		safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
 	} else if (cell === 0) {
-		cellEl.css('background-color', 'silver');
 		show($this.id[0], $this.id[1]);
-		cell = null;
-		safeCellsIds[safeCellsIds.indexOf($this.id)] = 'opened';
 	}
 	winCheck();
 	console.table(gameboard);
 	console.log(safeCellsIds);
 }
 
+function showCheck(row, column){
+  if (row >= 0 && row < rows && column >= 0 && column < columns) {
+    if (gameboard[row][column] === 0) {
+      show(row, column);
+    } else if (gameboard[row][column] > 0) {
+      $(`#${row}${column}`).text(`${gameboard[row][column]}`).css('background-color', 'silver');
+      safeCellsIds[safeCellsIds.indexOf(`${row}${column}`)] = 'opened';
+    }
+  }
+}
+
 function show(row, column) {
 	$(`#${+row}${+column}`).css('background-color', 'silver');
-	gameboard[row][column] = null;
+	gameboard[+row][+column] = null;
 	safeCellsIds[safeCellsIds.indexOf(`${+row}${+column}`)] = 'opened';
 
-  if (+row - 1 === -1) {
-	} else if (gameboard[+row - 1][+column] === 0) {
-    show(+row - 1, +column);
-	} else if (gameboard[+row - 1][+column] > 0) {
-    $(`#${+row - 1}${+column}`).text(`${gameboard[+row - 1][+column]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column}`)] = 'opened';
-  }
+  showCheck(+row - 1, +column);
+  showCheck(+row - 1, +column - 1);
+  showCheck(+row - 1, +column + 1);
+  showCheck(+row, +column - 1);
+  showCheck(+row, +column + 1);
+  showCheck(+row + 1, +column - 1);
+  showCheck(+row + 1, +column);
+  showCheck(+row + 1, +column + 1);
 
-	if (+row - 1 === -1 || +column - 1 === -1) {
-	} else if (gameboard[+row - 1][+column - 1] === 0) {
-		show(+row - 1, +column - 1);
-	} else if (gameboard[+row - 1][+column - 1] > 0) {
-    $(`#${+row - 1}${+column - 1}`).text(`${gameboard[+row - 1][+column - 1]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column - 1}`)] = 'opened';
-  }
-
-	if (+row - 1 === -1 || +column + 1 >= columns) {
-	} else if (gameboard[+row - 1][+column + 1] === 0) {
-		 show(+row - 1, +column + 1);
-	} else if (gameboard[+row - 1][+column + 1] > 0) {
-    $(`#${+row - 1}${+column + 1}`).text(`${gameboard[+row - 1][+column + 1]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column + 1}`)] = 'opened';
-  }
-
-	if (+column - 1 === -1) {
-	} else if (gameboard[+row][+column - 1] === 0) {
-		show(+row, +column - 1);
-	} else if (gameboard[+row][+column - 1] > 0) {
-    $(`#${+row}${+column - 1}`).text(`${gameboard[+row][+column - 1]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row}${+column - 1}`)] = 'opened';
-  }
-
-	if (+column + 1 >= columns) {
-	} else if (gameboard[+row][+column + 1] === 0) {
-		show(+row, +column + 1);
-	} else if (gameboard[+row][+column + 1] > 0) {
-    $(`#${+row}${+column + 1}`).text(`${gameboard[+row][+column + 1]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row}${+column + 1}`)] = 'opened';
-  }
-
-	if (+row + 1 >= rows || +column - 1 === -1) {
-	} else if (gameboard[+row + 1][+column - 1] === 0) {
-		show(+row + 1, +column - 1);
-	} else if (gameboard[+row + 1][+column - 1] > 0) {
-    $(`#${+row + 1}${+column - 1}`).text(`${gameboard[+row + 1][+column - 1]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column - 1}`)] = 'opened';
-  }
-
-	if (+row + 1 >= rows) {
-	} else if (gameboard[+row + 1][+column] === 0) {
-		show(+row + 1, +column);
-	} else if (gameboard[+row + 1][+column] > 0) {
-    $(`#${+row + 1}${+column}`).text(`${gameboard[+row + 1][+column]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column}`)] = 'opened';
-  }
-
-	if (+row + 1 >= rows || +column + 1 >= columns) {
-	} else if (gameboard[+row + 1][+column + 1] === 0) {
-		show(+row + 1, +column + 1);
-  } else if (gameboard[+row + 1][+column + 1] > 0) {
-    $(`#${+row + 1}${+column + 1}`).text(`${gameboard[+row + 1][+column + 1]}`).css('background-color', 'silver');
-    safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column + 1}`)] = 'opened';
-  }
 	winCheck();
 }
 
