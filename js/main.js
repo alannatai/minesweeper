@@ -170,7 +170,6 @@ function clickHandler(event) {
 	} else if (cell === 0) {
 		show(idArray[0], idArray[1]);
   }
-  console.log(cellStateBoard);
   console.log(gameboard);
 	winCheck();
 }
