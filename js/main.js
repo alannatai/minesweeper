@@ -95,34 +95,42 @@ function generateMines() {
 
 generateMines();
 
+let adjMineCount = 0
+
+function checkAdjacent(row, col) {
+  //CHECK IF CELLS ARE BEYOND THE EDGE OF THE BOARD
+  if (row >= 0 && row < rows && col >= 0 && col < columns) {
+    if (gameboard[row][col] === 'mine') {
+      adjMineCount += 1
+    }
+  }
+}
+
 //CALCULATE AND PRINT CELLS ADJACENT TO MINES
 function generateAdjacent() {
-  let adjMineCount = 0
 	for (let row = 0; row < gameboard.length; row++) {
 		for (let col = 0; col < gameboard[row].length; col++) {
 
-      //CHECK IF CELLS ARE BEYOND THE EDGE OF THE BOARD
-      if ((row - 1) >= 0 && (row + 1) < rows && (col - 1) >= 0 && (col + 1) < columns) {
-        //CHECK HOW MANY ADJACENT MINES TO CELL
-        if (gameboard[row - 1][col] === 'mine') {adjMineCount += 1}
-        if (gameboard[row - 1][col + 1] === 'mine') {adjMineCount += 1}
-        if (gameboard[row][col + 1] === 'mine') {adjMineCount += 1}
-        if (gameboard[row + 1][col + 1] === 'mine') {adjMineCount += 1}
-        if (gameboard[row + 1][col] === 'mine') {adjMineCount += 1}
-        if (gameboard[row + 1][col - 1] === 'mine') {adjMineCount += 1}
-        if (gameboard[row][col - 1] === 'mine') {adjMineCount += 1}
-        if (gameboard[row - 1][col - 1] === 'mine') {adjMineCount += 1}
-      }
+      //CHECK HOW MANY ADJACENT MINES TO CELL
+      checkAdjacent(row - 1, col);
+      checkAdjacent(row - 1, col + 1);
+      checkAdjacent(row, col + 1);
+      checkAdjacent(row + 1, col + 1);
+      checkAdjacent(row + 1, col);
+      checkAdjacent(row + 1, col - 1);
+      checkAdjacent(row, col - 1);
+      checkAdjacent(row - 1, col - 1);
       
-      //SET CELL TO PRINT MINE COUNT
+      //SET CELL TO MINE COUNT
 			if (!(gameboard[row][col] === 'mine')) {
 				gameboard[row][col] = adjMineCount;
       }
       //RESET MINE COUNT
-			adjMineCount = 0;
-		}
+      adjMineCount = 0;
+    }
 	}
 }
+
 
 //optimize code to loop 10 times on the mines
 //check area around each mine and +1 to all squares surrounding
@@ -187,85 +195,69 @@ function show(row, column) {
 	gameboard[row][column] = null;
 	safeCellsIds[safeCellsIds.indexOf(`${+row}${+column}`)] = 'opened';
 
-	if (+row - 1 === -1) {
+  if (+row - 1 === -1) {
 	} else if (gameboard[+row - 1][+column] === 0) {
-		show(+row - 1, +column);
+    show(+row - 1, +column);
 	} else if (gameboard[+row - 1][+column] > 0) {
-		$(`#${+row - 1}${+column}`)
-			.text(`${gameboard[+row - 1][+column]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column}`)] = 'opened';
-	}
+    $(`#${+row - 1}${+column}`).text(`${gameboard[+row - 1][+column]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column}`)] = 'opened';
+  }
 
 	if (+row - 1 === -1 || +column - 1 === -1) {
 	} else if (gameboard[+row - 1][+column - 1] === 0) {
 		show(+row - 1, +column - 1);
 	} else if (gameboard[+row - 1][+column - 1] > 0) {
-		$(`#${+row - 1}${+column - 1}`)
-			.text(`${gameboard[+row - 1][+column - 1]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column - 1}`)] = 'opened';
-	}
+    $(`#${+row - 1}${+column - 1}`).text(`${gameboard[+row - 1][+column - 1]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column - 1}`)] = 'opened';
+  }
 
 	if (+row - 1 === -1 || +column + 1 >= columns) {
 	} else if (gameboard[+row - 1][+column + 1] === 0) {
-		show(+row - 1, +column + 1);
+		 show(+row - 1, +column + 1);
 	} else if (gameboard[+row - 1][+column + 1] > 0) {
-		$(`#${+row - 1}${+column + 1}`)
-			.text(`${gameboard[+row - 1][+column + 1]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column + 1}`)] = 'opened';
-	}
+    $(`#${+row - 1}${+column + 1}`).text(`${gameboard[+row - 1][+column + 1]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row - 1}${+column + 1}`)] = 'opened';
+  }
 
 	if (+column - 1 === -1) {
 	} else if (gameboard[+row][+column - 1] === 0) {
 		show(+row, +column - 1);
 	} else if (gameboard[+row][+column - 1] > 0) {
-		$(`#${+row}${+column - 1}`)
-			.text(`${gameboard[+row][+column - 1]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row}${+column - 1}`)] = 'opened';
-	}
+    $(`#${+row}${+column - 1}`).text(`${gameboard[+row][+column - 1]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row}${+column - 1}`)] = 'opened';
+  }
 
 	if (+column + 1 >= columns) {
 	} else if (gameboard[+row][+column + 1] === 0) {
 		show(+row, +column + 1);
 	} else if (gameboard[+row][+column + 1] > 0) {
-		$(`#${+row}${+column + 1}`)
-			.text(`${gameboard[+row][+column + 1]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row}${+column + 1}`)] = 'opened';
-	}
+    $(`#${+row}${+column + 1}`).text(`${gameboard[+row][+column + 1]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row}${+column + 1}`)] = 'opened';
+  }
 
 	if (+row + 1 >= rows || +column - 1 === -1) {
 	} else if (gameboard[+row + 1][+column - 1] === 0) {
 		show(+row + 1, +column - 1);
 	} else if (gameboard[+row + 1][+column - 1] > 0) {
-		$(`#${+row + 1}${+column - 1}`)
-			.text(`${gameboard[+row + 1][+column - 1]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column - 1}`)] = 'opened';
-	}
+    $(`#${+row + 1}${+column - 1}`).text(`${gameboard[+row + 1][+column - 1]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column - 1}`)] = 'opened';
+  }
 
 	if (+row + 1 >= rows) {
 	} else if (gameboard[+row + 1][+column] === 0) {
 		show(+row + 1, +column);
 	} else if (gameboard[+row + 1][+column] > 0) {
-		$(`#${+row + 1}${+column}`)
-			.text(`${gameboard[+row + 1][+column]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column}`)] = 'opened';
-	}
+    $(`#${+row + 1}${+column}`).text(`${gameboard[+row + 1][+column]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column}`)] = 'opened';
+  }
 
 	if (+row + 1 >= rows || +column + 1 >= columns) {
 	} else if (gameboard[+row + 1][+column + 1] === 0) {
 		show(+row + 1, +column + 1);
-	} else if (gameboard[+row + 1][+column + 1] > 0) {
-		$(`#${+row + 1}${+column + 1}`)
-			.text(`${gameboard[+row + 1][+column + 1]}`)
-			.css('background-color', 'silver');
-		safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column + 1}`)] = 'opened';
-	}
+  } else if (gameboard[+row + 1][+column + 1] > 0) {
+    $(`#${+row + 1}${+column + 1}`).text(`${gameboard[+row + 1][+column + 1]}`).css('background-color', 'silver');
+    safeCellsIds[safeCellsIds.indexOf(`${+row + 1}${+column + 1}`)] = 'opened';
+  }
 	winCheck();
 }
 
