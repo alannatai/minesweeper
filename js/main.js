@@ -1,22 +1,21 @@
-//CONSTANTS
-let rows = 9;
-let columns = 9;
-let mineCount = 10;
 const levels = {
-  easy: {
+  'easy': {
     rows: 9,
     columns: 9,
-    mineCount: 10
+    mineCount: 10,
+    boardWidth: '270px'
   },
-  medium: {
+  'medium': {
     rows: 16,
     columns: 16,
-    mineCount: 40
+    mineCount: 40,
+    boardWidth: '480px'
   },
-  hard: {
+  'hard': {
     rows: 16,
     columns: 30,
-    mineCount: 99
+    mineCount: 99,
+    boardWidth: '900px'
   }
 }
 const numColours = {
@@ -32,7 +31,6 @@ const numColours = {
 let gameboard;
 let cellStateBoard;
 let safeCells = [];
-let safeCellsIds;
 
 //CREATE BLANK GAMEBOARD FROM ROW/COLUMN SIZE
 function createRow(length, value) {
@@ -102,11 +100,15 @@ function generateAdjacent() {
   }
 }
 
-function init() {
+function levelInitiator(level) {
+  rows = levels[level].rows;
+  columns = levels[level].columns;
+  mineCount = levels[level].mineCount;
+  $('#board').empty().css('width', `${levels[level].boardWidth}`); 
+
   gameboard = null;
   cellStateBoard = null;
   safeCells = [];
-  $('#board').empty(); 
   $('#status-message').text('');
   $('#fireworks').removeClass('img-show');
   gameboard = createGameboard();
@@ -114,12 +116,14 @@ function init() {
   generateGameboard();
   generateAdjacent();
 
-  $('#reset').on('click', init);
+  $('#easy').on('click', function() {levelInitiator('easy')});
+  $('#med').on('click', function() {levelInitiator('medium')});
+  $('#hard').on('click', function() {levelInitiator('hard')});
   $('.cell').on('click', clickHandler); 
   $('.cell').on('mousedown', rightClickHandler);
 }
 
-init();
+levelInitiator('easy');
 
 //optimize code to loop 10 times on the mines
 //check area around each mine and +1 to all squares surrounding

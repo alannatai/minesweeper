@@ -47,7 +47,6 @@ img {
 #board {
 	display: flex;
 	flex-wrap: wrap;
-	width: 270px;
 
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
@@ -66,4 +65,10 @@ img {
 
 .cell:hover {
 	background-color: white;
+}
+
+#levels-container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: space-evenly;
 }
