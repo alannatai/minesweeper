@@ -1,7 +1,24 @@
 //CONSTANTS
-let rows = 16;
-let columns = 16;
-let mineCount = 40;
+let rows = 9;
+let columns = 9;
+let mineCount = 10;
+const levels = {
+  easy: {
+    rows: 9,
+    columns: 9,
+    mineCount: 10
+  },
+  medium: {
+    rows: 16,
+    columns: 16,
+    mineCount: 40
+  },
+  hard: {
+    rows: 16,
+    columns: 30,
+    mineCount: 99
+  }
+}
 const numColours = {
   1: 'blue',
   2: 'green',
@@ -43,7 +60,7 @@ function generateGameboard() {
 		let mine = safeCells[randomMines];
 
     gameboard[mine[0]][mine[1]] = 'mine'; //set mines into gameboard
-    cellStateBoard[mine[0]][mine[1]] = 'opened';
+    cellStateBoard[mine[0]][mine[1]] = 'mine';
 		
 		safeCells.splice(randomMines, 1); //remove mines from cells array to avoid repeating mines
   }
@@ -99,10 +116,7 @@ function init() {
 
   $('#reset').on('click', init);
   $('.cell').on('click', clickHandler); 
-  $('.cell').mousedown(rightClickHandler);
-
-  console.log('gameboard', gameboard)
-  console.log('cellState', cellStateBoard)
+  $('.cell').on('mousedown', rightClickHandler);
 }
 
 init();
@@ -114,19 +128,23 @@ init();
 //RIGHT CLICK EVENT HANDLER TO PLACE AND REMOVE FLAGS
 function rightClickHandler(event) {
   let $this = event.target;
+  let idArray = $this.id.split('-');
   let cellEl = $(`#${$this.id}`);
 
 	if (event.which === 3) {
-		const $this = $(this);
-		$this.toggleClass('flagged');
+    const $this = $(this);
+    if(cellStateBoard[idArray[0]][idArray[1]] === 0 || cellStateBoard[idArray[0]][idArray[1]] === 'mine'){
+      
+      $this.toggleClass('flagged');
 
-		if ($this.hasClass('flagged')) {
-			cellEl.html('');
-			cellEl.on('click', clickHandler);
-		} else {
-			cellEl.html(`&#128681;`);
-			cellEl.off('click', clickHandler);
-		}
+      if ($this.hasClass('flagged')) {
+        cellEl.html('');
+        cellEl.on('click', clickHandler);
+      } else {
+        cellEl.html(`&#128681;`);
+        cellEl.off('click', clickHandler);
+      }
+    }
   }
 }
 
@@ -137,21 +155,20 @@ function clickHandler(event) {
   let cell = gameboard[idArray[0]][idArray[1]];
   let cellEl = $(`#${$this.id}`)
 
-  console.log(cell);
-
 	if (cell === 'mine') {
     $('#status-message').text('GAME OVER').css('color', 'red');
 		cellEl.css('background', 'red').html(`&#128163;`);
-		$('.cell').off('click', clickHandler);
+    $('.cell').off('click', clickHandler);
+    $('.cell').off('mousedown', rightClickHandler);
 	} else if (cell > 0) {
     cellEl.text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
-    cellStateBoard[+idArray[0]][+idArray[1]] = 'opened';
+    cellStateBoard[idArray[0]][idArray[1]] = 'opened';
 	} else if (cell === 0) {
-		show(+idArray[0], +idArray[1]);
-	}
+		show(idArray[0], idArray[1]);
+  }
+  console.log(cellStateBoard);
+  console.log(gameboard);
 	winCheck();
-	console.log(gameboard);
-	console.log(cellStateBoard);
 }
 
 function showCheck(row, column){
@@ -167,7 +184,7 @@ function showCheck(row, column){
 }
 
 function show(row, column) {
-	$(`#${+row}-${+column}`).css('background', 'silver');
+	$(`#${row}-${column}`).css('background', 'silver');
 	gameboard[+row][+column] = null;
 	cellStateBoard[+row][+column] = 'opened';
 
@@ -186,7 +203,7 @@ function show(row, column) {
 //WIN CONDITION
 function winCheck() {
 	let allOpened = cellStateBoard.every(array => {
-    let allOpenedValues = array.every(val => val === 'opened')
+    let allOpenedValues = array.every(val => val === 'opened' || val === 'mine')
     return allOpenedValues;
   });
 
@@ -194,7 +211,8 @@ function winCheck() {
 		$('#status-message')
 			.text('YOU WIN!')
 			.css('color', 'cornflowerblue');
-		$('.cell').off('click', clickHandler);
+    $('.cell').off('click', clickHandler);
+    $('.cell').off('mousedown', rightClickHandler);
 		$('#fireworks').addClass('img-show');
 	}
 }

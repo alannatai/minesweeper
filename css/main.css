@@ -47,7 +47,7 @@ img {
 #board {
 	display: flex;
 	flex-wrap: wrap;
-	width: 480px;
+	width: 270px;
 
 	-webkit-touch-callout: none; /* iOS Safari */
 	-webkit-user-select: none; /* Safari */
