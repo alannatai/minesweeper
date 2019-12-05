@@ -143,7 +143,7 @@ function rightClickHandler(event) {
 
     //is number and opened
     if (gameboard[row][col] > 0 && cellStateBoard[row][col] === 'opened') {
-      console.log(idArray);
+     
       checkAdjacentFlags(row - 1, col);
       checkAdjacentFlags(row - 1, col + 1);
       checkAdjacentFlags(row, col + 1);
@@ -186,14 +186,20 @@ function showCheck(row, column){
   // dont run a check if the cell is not on the board
   if (row >= 0 && row < rows && column >= 0 && column < columns) {
     const cell = gameboard[row][column];
-    const cellElFlagged = $(`#${row}-${column}`).hasClass('flagged');
+    const cellEl = $(`#${row}-${column}`);
+    const cellElFlagged = cellEl.hasClass('flagged');
 
     if (cell === 0 && !(cellElFlagged)) {
       show(row, column);
     } else if (cell > 0 && !(cellElFlagged)) {
       // make sure you open ONLY non flagged
-      $(`#${row}-${column}`).text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
+      cellEl.text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
       cellStateBoard[row][column] = 'opened';
+    } else if (cell === 'mine' && !(cellElFlagged)) {
+      $('#status-message').text('GAME OVER').css('color', 'red');
+		  cellEl.css('background', 'red').html(`&#128163;`);
+      $('.cell').off('click', clickHandler);
+      $('.cell').off('mousedown', rightClickHandler);
     }
   }
 }
@@ -255,7 +261,6 @@ function init(level) {
   $('.cell').on('click', clickHandler); 
   $('.cell').on('mousedown', rightClickHandler);
   console.log('gameboard', gameboard);
-  console.log('cellStateBoard', cellStateBoard);
 }
 
 function levelListeners() {
