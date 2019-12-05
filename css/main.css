@@ -36,8 +36,7 @@ img {
 .img-show {
   display: inline-block;
   position: fixed;
-  height: 290px; 
-  margin-left: 20px;
+  margin: -105px;
 }
 
 #status-message {
