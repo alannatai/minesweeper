@@ -100,31 +100,6 @@ function generateAdjacent() {
   }
 }
 
-function levelInitiator(level) {
-  rows = levels[level].rows;
-  columns = levels[level].columns;
-  mineCount = levels[level].mineCount;
-  $('#board').empty().css('width', `${levels[level].boardWidth}`); 
-
-  gameboard = null;
-  cellStateBoard = null;
-  safeCells = [];
-  $('#status-message').text('');
-  $('#fireworks').removeClass('img-show');
-  gameboard = createGameboard();
-  cellStateBoard = createGameboard();
-  generateGameboard();
-  generateAdjacent();
-
-  $('#easy').on('click', function() {levelInitiator('easy')});
-  $('#med').on('click', function() {levelInitiator('medium')});
-  $('#hard').on('click', function() {levelInitiator('hard')});
-  $('.cell').on('click', clickHandler); 
-  $('.cell').on('mousedown', rightClickHandler);
-}
-
-levelInitiator('easy');
-
 //optimize code to loop 10 times on the mines
 //check area around each mine and +1 to all squares surrounding
 //then increment for every adjacent mine
@@ -220,4 +195,32 @@ function winCheck() {
 	}
 }
 
-winCheck();
+function init(level) {
+  rows = levels[level].rows;
+  columns = levels[level].columns;
+  mineCount = levels[level].mineCount;
+  $('#board').empty().css('width', `${levels[level].boardWidth}`); 
+
+  gameboard = null;
+  cellStateBoard = null;
+  safeCells = [];
+  $('#status-message').text('');
+  $('#fireworks').removeClass('img-show');
+  gameboard = createGameboard();
+  cellStateBoard = createGameboard();
+  generateGameboard();
+  generateAdjacent();
+
+
+  $('.cell').on('click', clickHandler); 
+  $('.cell').on('mousedown', rightClickHandler);
+}
+
+function levelListeners() {
+  $('#easy').on('click', function() { init('easy') });
+  $('#med').on('click', function() { init('medium') });
+  $('#hard').on('click', function() { init('hard') });
+};
+
+init('easy');
+levelListeners();
