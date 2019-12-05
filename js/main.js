@@ -32,15 +32,14 @@ let gameboard;
 let cellStateBoard;
 let safeCells = [];
 
-//CREATE BLANK GAMEBOARD FROM ROW/COLUMN SIZE
+//CREATE BLANK GAMEBOARD FROM ROW/COLUMN LENGTH
 function createRow(length, value) {
 	return new Array(length).fill(value);
-}
-
+};
 function createGameboard () {
   let mappedBoard = createRow(rows, null).map(() => createRow(columns, 0));
   return mappedBoard;
-}
+};
 
 //RENDER GAMEBOARD INTO DOM
 //GENERATE RANDOM MINES INTO GAMEBOARD
@@ -66,8 +65,9 @@ function generateGameboard() {
 
 let adjMineCount = 0
 
-function checkAdjacent(row, col) {
-  //CHECK IF CELLS ARE BEYOND THE EDGE OF THE BOARD
+//CHECK IF CELLS ARE BEYOND THE EDGE OF THE BOARD
+//INCREMENT MINEMOUNT
+function checkAdjacentMines(row, col) {
   if (row >= 0 && row < rows && col >= 0 && col < columns) {
     if (gameboard[row][col] === 'mine') {
       adjMineCount += 1
@@ -75,20 +75,20 @@ function checkAdjacent(row, col) {
   }
 }
 
-//CALCULATE AND PRINT CELLS ADJACENT TO MINES
+//LOOP THROUGH GAMEBOARD AND PRINT CELLS ADJACENT TO MINES
 function generateAdjacent() {
 	for (let row = 0; row < gameboard.length; row++) {
 		for (let col = 0; col < gameboard[row].length; col++) {
 
       //CHECK HOW MANY ADJACENT MINES TO CELL
-      checkAdjacent(row - 1, col);
-      checkAdjacent(row - 1, col + 1);
-      checkAdjacent(row, col + 1);
-      checkAdjacent(row + 1, col + 1);
-      checkAdjacent(row + 1, col);
-      checkAdjacent(row + 1, col - 1);
-      checkAdjacent(row, col - 1);
-      checkAdjacent(row - 1, col - 1);
+      checkAdjacentMines(row - 1, col);
+      checkAdjacentMines(row - 1, col + 1);
+      checkAdjacentMines(row, col + 1);
+      checkAdjacentMines(row + 1, col + 1);
+      checkAdjacentMines(row + 1, col);
+      checkAdjacentMines(row + 1, col - 1);
+      checkAdjacentMines(row, col - 1);
+      checkAdjacentMines(row - 1, col - 1);
       
       //SET CELL TO MINE COUNT
 			if (!(gameboard[row][col] === 'mine')) {
@@ -104,35 +104,69 @@ function generateAdjacent() {
 //check area around each mine and +1 to all squares surrounding
 //then increment for every adjacent mine
 
-//RIGHT CLICK EVENT HANDLER TO PLACE AND REMOVE FLAGS
-function rightClickHandler(event) {
-  let $this = event.target;
-  let idArray = $this.id.split('-');
-  let cellEl = $(`#${$this.id}`);
-
-	if (event.which === 3) {
-    const $this = $(this);
-    if(cellStateBoard[idArray[0]][idArray[1]] === 0 || cellStateBoard[idArray[0]][idArray[1]] === 'mine'){
-      
-      $this.toggleClass('flagged');
-
-      if ($this.hasClass('flagged')) {
-        cellEl.html('');
-        cellEl.on('click', clickHandler);
-      } else {
-        cellEl.html(`&#128681;`);
-        cellEl.off('click', clickHandler);
-      }
+let flagCount = 0;
+function checkAdjacentFlags(row, col) {
+  if (row >= 0 && row < rows && col >= 0 && col < columns) {
+    if ($(`#${row}-${col}`).hasClass('flagged')) {
+      flagCount += 1
     }
   }
 }
 
+//RIGHT CLICK EVENT HANDLER
+function rightClickHandler(event) {
+
+  // UI Variables
+  const idArray = event.target.id.split('-');
+  const row = parseInt(idArray[0]);
+  const col = parseInt(idArray[1]);
+  const cell = gameboard[row][col];
+  const cellEl = $(`#${event.target.id}`);
+
+	if (event.which === 3) {
+    const $this = $(this);
+
+    //not flagged and not opened
+    if(cellStateBoard[row][col] !== 'opened'){
+      
+      // set the flag on/off
+      if ($this.hasClass('flagged')) {
+        cellEl.html('');
+        cellEl.on('click', clickHandler);
+        $this.toggleClass('flagged');
+      } else {
+        cellEl.html(`&#128681;`);
+        cellEl.off('click', clickHandler);
+        $this.toggleClass('flagged');
+      }
+    }
+
+    //is number and opened
+    if (gameboard[row][col] > 0 && cellStateBoard[row][col] === 'opened') {
+      console.log(idArray);
+      checkAdjacentFlags(row - 1, col);
+      checkAdjacentFlags(row - 1, col + 1);
+      checkAdjacentFlags(row, col + 1);
+      checkAdjacentFlags(row + 1, col + 1);
+      checkAdjacentFlags(row + 1, col);
+      checkAdjacentFlags(row + 1, col - 1);
+      checkAdjacentFlags(row, col - 1);
+      checkAdjacentFlags(row - 1, col - 1);
+
+      if (cell === flagCount) {
+        show(row, col);
+      }
+      flagCount = 0;
+    }
+  }
+  winCheck();
+}
+
 //ON CELL CLICK EVENT HANDLER
 function clickHandler(event) {
-  let $this = event.target;
-  let idArray = $this.id.split('-');
-  let cell = gameboard[idArray[0]][idArray[1]];
-  let cellEl = $(`#${$this.id}`)
+  const idArray = event.target.id.split('-');
+  const cell = gameboard[idArray[0]][idArray[1]];
+  const cellEl = $(`#${event.target.id}`)
 
 	if (cell === 'mine') {
     $('#status-message').text('GAME OVER').css('color', 'red');
@@ -145,16 +179,19 @@ function clickHandler(event) {
 	} else if (cell === 0) {
 		show(idArray[0], idArray[1]);
   }
-  console.log(gameboard);
 	winCheck();
 }
 
 function showCheck(row, column){
+  // dont run a check if the cell is not on the board
   if (row >= 0 && row < rows && column >= 0 && column < columns) {
-    let cell = gameboard[row][column];
-    if (cell === 0) {
+    const cell = gameboard[row][column];
+    const cellElFlagged = $(`#${row}-${column}`).hasClass('flagged');
+
+    if (cell === 0 && !(cellElFlagged)) {
       show(row, column);
-    } else if (cell > 0) {
+    } else if (cell > 0 && !(cellElFlagged)) {
+      // make sure you open ONLY non flagged
       $(`#${row}-${column}`).text(`${cell}`).css({'background': 'silver', 'color': numColours[cell]});
       cellStateBoard[row][column] = 'opened';
     }
@@ -162,20 +199,23 @@ function showCheck(row, column){
 }
 
 function show(row, column) {
-	$(`#${row}-${column}`).css('background', 'silver');
-	gameboard[+row][+column] = null;
-	cellStateBoard[+row][+column] = 'opened';
+  $(`#${row}-${column}`).css('background', 'silver');
+  const rowNum = parseInt(row);
+  const colNum = parseInt(column);
+  cellStateBoard[rowNum][colNum] = 'opened';
 
-  showCheck(+row - 1, +column);
-  showCheck(+row - 1, +column - 1);
-  showCheck(+row - 1, +column + 1);
-  showCheck(+row, +column - 1);
-  showCheck(+row, +column + 1);
-  showCheck(+row + 1, +column - 1);
-  showCheck(+row + 1, +column);
-  showCheck(+row + 1, +column + 1);
-
-	winCheck();
+  if (gameboard[rowNum][colNum] === 0) {
+    gameboard[rowNum][colNum] = null;
+  } 
+  
+  showCheck(rowNum - 1, colNum);
+  showCheck(rowNum - 1, colNum - 1);
+  showCheck(rowNum - 1, colNum + 1);
+  showCheck(rowNum, colNum - 1);
+  showCheck(rowNum, colNum + 1);
+  showCheck(rowNum + 1, colNum - 1);
+  showCheck(rowNum + 1, colNum);
+  showCheck(rowNum + 1, colNum + 1);  
 }
 
 //WIN CONDITION
@@ -214,6 +254,8 @@ function init(level) {
 
   $('.cell').on('click', clickHandler); 
   $('.cell').on('mousedown', rightClickHandler);
+  console.log('gameboard', gameboard);
+  console.log('cellStateBoard', cellStateBoard);
 }
 
 function levelListeners() {

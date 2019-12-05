@@ -60,7 +60,8 @@ img {
   background: radial-gradient(ellipse at top, #ffffff, transparent),
             radial-gradient(ellipse at bottom, #8a8a8a, transparent);
 	border: solid 1px rgb(161, 161, 161);
-	font-size: 25px;
+  font-size: 25px;
+  text-align: center;
 }
 
 .cell:hover {
