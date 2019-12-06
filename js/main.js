@@ -252,6 +252,7 @@ function winCheck() {
     $('#mine-count').text('0').css('color', '#60d1e5');
     $('.cell').off('click', clickHandler);
     $('.cell').off('mousedown', rightClickHandler);
+    $('#open-all').off('click', openAll);
 		$('#fireworks').addClass('img-show');
 	}
 }
