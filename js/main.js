@@ -31,6 +31,7 @@ const numColours = {
 let gameboard;
 let cellStateBoard;
 let safeCells = [];
+let currentMineCount;
 
 //CREATE BLANK GAMEBOARD FROM ROW/COLUMN LENGTH
 function createRow(length, value) {
@@ -132,10 +133,12 @@ function rightClickHandler(event) {
       // set the flag on/off
       if ($this.hasClass('flagged')) {
         cellEl.html('');
+        $('#mine-count').text(`${currentMineCount += 1}`);
         cellEl.on('click', clickHandler);
         $this.toggleClass('flagged');
       } else {
         cellEl.html(`&#128681;`);
+        $('#mine-count').text(`${currentMineCount -= 1}`);
         cellEl.off('click', clickHandler);
         $this.toggleClass('flagged');
       }
@@ -234,7 +237,8 @@ function winCheck() {
 	if (allOpened) {
 		$('#status-message')
 			.text('YOU WIN!')
-			.css('color', '#60d1e5');
+      .css('color', '#60d1e5');
+    $('#mine-count').text('0').css('color', '#60d1e5');
     $('.cell').off('click', clickHandler);
     $('.cell').off('mousedown', rightClickHandler);
 		$('#fireworks').addClass('img-show');
@@ -250,6 +254,8 @@ function init(level) {
   gameboard = null;
   cellStateBoard = null;
   safeCells = [];
+  currentMineCount = levels[level].mineCount;
+  $('#mine-count').text(`${currentMineCount}`)
   $('#status-message').text('');
   $('#fireworks').removeClass('img-show');
   gameboard = createGameboard();
