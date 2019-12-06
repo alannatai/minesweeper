@@ -45,11 +45,11 @@ function createGameboard () {
 //RENDER GAMEBOARD INTO DOM
 //GENERATE RANDOM MINES INTO GAMEBOARD
 function generateGameboard() {
-  for (let i = 0; i < gameboard.length; i++) {
-    for (let j = 0; j < gameboard[i].length; j++) {
+  for (let row = 0; row < gameboard.length; row++) {
+    for (let col = 0; col < gameboard[row].length; col++) {
       const cellEl = $('<div></div>').addClass('cell');
-      $('#board').append(cellEl.attr('id', `${i}-${j}`));
-      safeCells.push([i, j]);
+      $('#board').append(cellEl.attr('id', `${row}-${col}`));
+      safeCells.push([row, col]);
     }
   }
 
@@ -227,6 +227,17 @@ function show(row, column) {
   showCheck(rowNum + 1, colNum + 1);  
 }
 
+function openAll() {
+  for (let row = 0; row < gameboard.length; row++) {
+		for (let col = 0; col < gameboard[row].length; col++) {
+      showCheck(row, col);
+      if(currentMineCount === 0) {
+        winCheck();
+      }
+    }
+  }
+}
+
 //WIN CONDITION
 function winCheck() {
 	let allOpened = cellStateBoard.every(array => {
@@ -255,7 +266,7 @@ function init(level) {
   cellStateBoard = null;
   safeCells = [];
   currentMineCount = levels[level].mineCount;
-  $('#mine-count').text(`${currentMineCount}`)
+  $('#mine-count').text(`${currentMineCount}`).css('color', 'red');
   $('#status-message').text('');
   $('#fireworks').removeClass('img-show');
   gameboard = createGameboard();
@@ -263,9 +274,9 @@ function init(level) {
   generateGameboard();
   generateAdjacent();
 
-
   $('.cell').on('click', clickHandler); 
   $('.cell').on('mousedown', rightClickHandler);
+  $('#open-all').on('click', openAll);
   console.log('gameboard', gameboard);
 }
 
