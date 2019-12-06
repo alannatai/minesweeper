@@ -21,6 +21,17 @@ header {
 	text-align: right;
 }
 
+#remaining-mine-count {
+  text-align: center;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 14px;
+  color: rgb(134, 134, 134);
+}
+
+#mine-count {
+  color: red;
+}
+
 button {
   font-family: 'Share Tech Mono', monospace;
   padding: 5px;
@@ -35,8 +46,8 @@ img {
 
 .img-show {
   display: inline-block;
-  position: fixed;
-  margin: -105px;
+  position: absolute;
+  margin: -110px;
 }
 
 #status-message {
