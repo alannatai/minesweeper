@@ -234,7 +234,7 @@ function winCheck() {
 	if (allOpened) {
 		$('#status-message')
 			.text('YOU WIN!')
-			.css('color', 'cornflowerblue');
+			.css('color', '#60d1e5');
     $('.cell').off('click', clickHandler);
     $('.cell').off('mousedown', rightClickHandler);
 		$('#fireworks').addClass('img-show');
