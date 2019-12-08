@@ -75,7 +75,8 @@ img {
 }
 
 .cell:hover {
-	background-color: white;
+	background: radial-gradient(ellipse at top, #ffffff, transparent),
+            radial-gradient(ellipse at bottom, #4e4e4e, transparent);
 }
 
 #levels-container {
