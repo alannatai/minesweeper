@@ -39,6 +39,7 @@ Clues, in the form of numbers, help you locate the cells that contain the mines.
 ### Next Steps...
 
 - Implement a '?' marker when you are not sure which cell is a mine
+- Render a "misplaced flag" cell when a flag is wrongly placed and you lose the game
 - Optimize the number generator by only looping through the mines and incrementing the adjacent mine count vs. the whole board
 - Refactor, refactor, REFACTOR...
 
